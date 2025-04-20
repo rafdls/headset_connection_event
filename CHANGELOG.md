@@ -1,3 +1,7 @@
+## 4.0.2
+
+- Update homepage
+
 ## 4.0.1
 
 - Remove reference to old PluginRegistry.Registrar
