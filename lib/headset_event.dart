@@ -1,10 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 typedef DetectPluggedCallback = Function(HeadsetState payload);
 
@@ -42,10 +39,9 @@ class HeadsetEvent {
     return _instance!;
   }
 
-  //Reads asynchronously the current state of the headset with type [HeadsetState]
+  /// Reads asynchronously the current state of the headset with type [HeadsetState]
   Future<HeadsetState?> get getCurrentState async {
     final state = await _channel.invokeMethod<int?>('getCurrentState');
-
     switch (state) {
       case 0:
         return HeadsetState.DISCONNECT;
@@ -56,26 +52,22 @@ class HeadsetEvent {
     }
   }
 
-  Future<bool> requestPermission() async {
-    if (!Platform.isAndroid) {
-      return true;
-    }
-    return Permission.bluetoothConnect.request().isGranted;
-  }
-
-  //Sets a callback that is called whenever a change in [HeadsetState] happens.
-  //Callback function [onPlugged] must accept a [HeadsetState] parameter.
+  /// Sets a callback that is called whenever a change in [HeadsetState] happens.
+  /// Callback function [onPlugged] must accept a [HeadsetState] parameter.
   void setListener(DetectPluggedCallback onPlugged) {
     _detectPluggedCallback = onPlugged;
     _channel.setMethodCallHandler(_handleMethod);
   }
 
+  /// Removes the listener for headset events.
+  void removeListener() {
+    _detectPluggedCallback = null;
+    _channel.setMethodCallHandler(null);
+  }
+
   Future<dynamic> _handleMethod(MethodCall call) async {
     final callback = _detectPluggedCallback;
-    if (callback == null) {
-      return;
-    }
-
+    if (callback == null) return;
     switch (call.method) {
       case "connect":
         return callback(HeadsetState.CONNECT);

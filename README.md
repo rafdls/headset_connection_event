@@ -75,8 +75,21 @@ Make the following changes to your project's main `AndroidManifest.xml` file:
 
 Please see example project AndroidManifest.xml for more information.
 
-Android 12 requires bluetoothConnect permission. You may request it using the following:
+Android 12 requires bluetoothConnect permission. You may request it using the [permission_handler](https://pub.dev/packages/permission_handler):
+
+Add permission in your manifest
+
+```xml
+<uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+```
 
 ```dart
-HeadsetPlugin.requestPermission();
+import 'package:permission_handler/permission_handler.dart';
+
+Future<bool> requestPermission() async {
+  if (!Platform.isAndroid) return true;
+  return Permission.bluetoothConnect.request().isGranted;
+}
 ```
