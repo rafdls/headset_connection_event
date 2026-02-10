@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:headset_connection_event/headset_event.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,7 +22,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     ///Request Permissions (Required for Android 12)
-    _headsetPlugin.requestPermission();
+    _requestPermission();
 
     /// if headset is plugged
     _headsetPlugin.getCurrentState.then((value) {
@@ -34,6 +37,11 @@ class _MyAppState extends State<MyApp> {
         _headsetState = value;
       });
     });
+  }
+
+  Future<bool> _requestPermission() async {
+    if (!Platform.isAndroid) return true;
+    return Permission.bluetoothConnect.request().isGranted;
   }
 
   @override

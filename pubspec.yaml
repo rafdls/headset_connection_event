@@ -10,7 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  permission_handler: ^11.0.1
 
 dev_dependencies:
   flutter_lints: ^5.0.0
